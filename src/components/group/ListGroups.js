@@ -20,12 +20,12 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 import api from '../../common/apiConfig';
-import axios from "axios";
+import axios from 'axios';
 
 let counter = 0;
 function createData(id, name, status) {
   counter += 1;
-  return { id: id, name, status};
+  return { id: id, name, status };
 }
 
 function desc(a, b, orderBy) {
@@ -49,11 +49,18 @@ function stableSort(array, cmp) {
 }
 
 function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+  return order === 'desc'
+    ? (a, b) => desc(a, b, orderBy)
+    : (a, b) => -desc(a, b, orderBy);
 }
 
 const rows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'name of the group' },
+  {
+    id: 'name',
+    numeric: false,
+    disablePadding: true,
+    label: 'name of the group'
+  },
   { id: 'status', numeric: false, disablePadding: true, label: 'status' }
 ];
 
@@ -63,7 +70,13 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const {
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount
+    } = this.props;
 
     return (
       <TableHead>
@@ -111,32 +124,32 @@ EnhancedTableHead.propTypes = {
   onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired
 };
 
 const toolbarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing.unit
   },
   highlight:
     theme.palette.type === 'light'
       ? {
           color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
         }
       : {
           color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
+          backgroundColor: theme.palette.secondary.dark
         },
   spacer: {
-    flex: '1 1 100%',
+    flex: '1 1 100%'
   },
   actions: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary
   },
   title: {
-    flex: '0 0 auto',
-  },
+    flex: '0 0 auto'
+  }
 });
 
 let EnhancedTableToolbar = props => {
@@ -145,7 +158,7 @@ let EnhancedTableToolbar = props => {
   return (
     <Toolbar
       className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
+        [classes.highlight]: numSelected > 0
       })}
     >
       <div className={classes.title}>
@@ -181,7 +194,7 @@ let EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
+  numSelected: PropTypes.number.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -189,14 +202,14 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 3
   },
   table: {
-    midth: 1020,
+    midth: 1020
   },
   tableWrapper: {
-    overflowX: 'auto',
-  },
+    overflowX: 'auto'
+  }
 });
 
 class ListGroups extends React.Component {
@@ -206,7 +219,7 @@ class ListGroups extends React.Component {
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 5
   };
 
   handleRequestSort = (event, property) => {
@@ -242,7 +255,7 @@ class ListGroups extends React.Component {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
 
@@ -262,110 +275,113 @@ class ListGroups extends React.Component {
   getGroups = () => {
     let _this = this;
     let headers = {
-        'Content-Type': 'application/json',
-        'token': window.localStorage.getItem("currentUser")
-    }
-    axios.get(api.url + api.group,{"headers" : headers})
-    .then(function (response) {
-      let user = response.data;
-      for (var i = 0; i < user.length; i++) {
-        _this.state.data.push(createData(user[i]._id, user[i].name, user[i].activeStatus));
-      };
+      'Content-Type': 'application/json',
+      token: window.localStorage.getItem('currentUser')
+    };
+    axios
+      .get(api.url + api.group, { headers: headers })
+      .then(function(response) {
+        let user = response.data;
+        for (var i = 0; i < user.length; i++) {
+          _this.state.data.push(
+            createData(user[i]._id, user[i].name, user[i].activeStatus)
+          );
+        }
         _this.forceUpdate();
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .then(function () {
-    // always executed
-    });
-  }
+      })
+      .catch(function(error) {
+        console.log(error);
+      })
+      .then(function() {
+        // always executed
+      });
+  };
 
   componentDidMount() {
     let _this = this;
-    setTimeout(function(){
+    setTimeout(function() {
       _this.getGroups();
-    }, 1000)
+    }, 1000);
   }
 
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const emptyRows =
+      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div className="topPadding">
-      <h1>Groups</h1>
-      <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-            />
-            <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        <a href={`/group/${n.id}`}>{n.name}</a>
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.status? "Active": "inActive"}
-                      </TableCell>
-
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+        <h1>Groups</h1>
+        <Paper className={classes.root}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <div className={classes.tableWrapper}>
+            <Table className={classes.table} aria-labelledby="tableTitle">
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={data.length}
+              />
+              <TableBody>
+                {stableSort(data, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(n => {
+                    const isSelected = this.isSelected(n.id);
+                    return (
+                      <TableRow
+                        hover
+                        onClick={event => this.handleClick(event, n.id)}
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        tabIndex={-1}
+                        key={n.id}
+                        selected={isSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={isSelected} />
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          <a href={`/group/${n.id}`}>{n.name}</a>
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
+                          {n.status ? 'Active' : 'inActive'}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 49 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <TablePagination
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page'
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page'
+            }}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     );
   }
 }
 
 ListGroups.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(ListGroups);

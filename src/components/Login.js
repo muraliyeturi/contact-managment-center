@@ -15,17 +15,20 @@ import { withStyles } from '@material-ui/core/styles';
 
 import api from '../common/apiConfig';
 import constants from '../common/constants';
-import axios from "axios";
+import axios from 'axios';
 
 import CreateUser from './register/CreateUser';
 
 import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import {
+  NotificationContainer,
+  NotificationManager
+} from 'react-notifications';
 
 const styles = theme => ({
   container: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -36,7 +39,6 @@ const styles = theme => ({
 var renderedComponent = null;
 
 class Login extends React.Component {
-
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -47,34 +49,34 @@ class Login extends React.Component {
       password: '',
       validUserName: false,
       validPassword: false,
-      loginError:''
+      loginError: ''
     };
   }
 
-
   submitHandler = () => {
     if (!this.state.username && !this.state.password) {
-      NotificationManager.warning('error', "Enter Missing Information", 3000);
+      NotificationManager.warning('error', 'Enter Missing Information', 3000);
     } else {
-        const _this = this;
-        axios.post(api.url + api.login, {
+      const _this = this;
+      axios
+        .post(api.url + api.login, {
           username: this.state.username,
           password: this.state.password
         })
-        .then(function (response) {
-          if(response.data.success) {
+        .then(function(response) {
+          if (response.data.success) {
             _this.setState({ open: false });
             _this.props.sendData(response.data);
-            window.localStorage.setItem("currentUser", response.data.token);
+            window.localStorage.setItem('currentUser', response.data.token);
           } else {
-            _this.setState({loginError : response.data.message});
-             NotificationManager.warning('error', response.data.message, 3000);
+            _this.setState({ loginError: response.data.message });
+            NotificationManager.warning('error', response.data.message, 3000);
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
         });
-        _this.forceUpdate();
+      _this.forceUpdate();
     }
   };
 
@@ -82,85 +84,131 @@ class Login extends React.Component {
     const name = event.target.name;
     const value = event.target.value;
     this.validate(name, value);
-    this.setState({[name]: value});
-    this.setState({loginError : ''});
+    this.setState({ [name]: value });
+    this.setState({ loginError: '' });
   };
 
   validate = (name, value) => {
     switch (name) {
-      case "username":
-        let isValidEmail = value.match(new RegExp('\^\\w+([\\.-]?\\w+)*(\\b@'+constants.emailDomain+'\\b)+$'));
-        this.setState({validUserName: isValidEmail === null});
+      case 'username':
+        let isValidEmail = value.match(
+          new RegExp(
+            '^\\w+([\\.-]?\\w+)*(\\b@' + constants.emailDomain + '\\b)+$'
+          )
+        );
+        this.setState({ validUserName: isValidEmail === null });
         break;
-      case "password":
-        this.setState({validPassword: value == ''});
+      case 'password':
+        this.setState({ validPassword: value == '' });
         break;
     }
   };
 
-  getData = (userId) => {
+  getData = userId => {
     renderedComponent = null;
     this.forceUpdate();
-    NotificationManager.success('User Created Successfully. Please login',userId, 10000);
-  }
+    NotificationManager.success(
+      'User Created Successfully. Please login',
+      userId,
+      10000
+    );
+  };
 
   createUserHandler = () => {
-    renderedComponent = <Dialog
-      open = {true}
-      aria-labelledby="signup"
-      aria-describedby="create user account to login">
-      <DialogTitle id="alert-dialog-title-signup">{"Sign up for new Account"}</DialogTitle>
-      <DialogContent>
-        <CreateUser sendData={this.getData}/>;
-      </DialogContent>
-    </Dialog>
+    renderedComponent = (
+      <Dialog
+        open={true}
+        aria-labelledby="signup"
+        aria-describedby="create user account to login"
+      >
+        <DialogTitle id="alert-dialog-title-signup">
+          {'Sign up for new Account'}
+        </DialogTitle>
+        <DialogContent>
+          <CreateUser sendData={this.getData} />;
+        </DialogContent>
+      </Dialog>
+    );
     this.forceUpdate();
-  }
+  };
 
   render() {
     const { classes } = this.props;
     if (renderedComponent === null) {
-      return(<div><Dialog
+      return (
+        <div>
+          <Dialog
             open={this.state.open}
             aria-labelledby="Login"
-            aria-describedby="login to access application">
-            <DialogTitle id="alert-dialog-title">{"Login"}</DialogTitle>
+            aria-describedby="login to access application"
+          >
+            <DialogTitle id="alert-dialog-title">{'Login'}</DialogTitle>
             <DialogContent>
-                <FormControl aria-describedby="enter user name" error ={this.state.validUserName} className={classes.formControl}>
-                  <InputLabel htmlFor="username-error">UserName</InputLabel>
-                  <Input id="username-error" onChange={this.handleChange} name="username"/>
-                  {this.state.validUserName?
-                  <FormHelperText id="username-error-text">Enter valid User name</FormHelperText>
-                  :''}
-                  </FormControl>
-                <FormControl aria-describedby="enter password" error ={this.state.validPassword} className={classes.formControl}>
-                  <InputLabel htmlFor="password-error" >Password</InputLabel>
-                  <Input id="password-error" onChange={this.handleChange} name="password" type="password"/>
-                  {!this.state.password?
-                  <FormHelperText id="password-error-text">Enter valid Password</FormHelperText>
-                  :''}
-                </FormControl>
-                <p className="errorMessage">
-                  {this.state.loginError}
-                </p>
-                <p className="forgotPassword"><a href="">Forgot password</a></p>
+              <FormControl
+                aria-describedby="enter user name"
+                error={this.state.validUserName}
+                className={classes.formControl}
+              >
+                <InputLabel htmlFor="username-error">UserName</InputLabel>
+                <Input
+                  id="username-error"
+                  onChange={this.handleChange}
+                  name="username"
+                />
+                {this.state.validUserName ? (
+                  <FormHelperText id="username-error-text">
+                    Enter valid User name
+                  </FormHelperText>
+                ) : (
+                  ''
+                )}
+              </FormControl>
+              <FormControl
+                aria-describedby="enter password"
+                error={this.state.validPassword}
+                className={classes.formControl}
+              >
+                <InputLabel htmlFor="password-error">Password</InputLabel>
+                <Input
+                  id="password-error"
+                  onChange={this.handleChange}
+                  name="password"
+                  type="password"
+                />
+                {!this.state.password ? (
+                  <FormHelperText id="password-error-text">
+                    Enter valid Password
+                  </FormHelperText>
+                ) : (
+                  ''
+                )}
+              </FormControl>
+              <p className="errorMessage">{this.state.loginError}</p>
+              <p className="forgotPassword">
+                <a href="">Forgot password</a>
+              </p>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.submitHandler} color="primary" variant="contained" component="span" className={classes.button}>
+              <Button
+                onClick={this.submitHandler}
+                color="primary"
+                variant="contained"
+                component="span"
+                className={classes.button}
+              >
                 Login
               </Button>
               <Button onClick={this.createUserHandler} color="secondary">
                 Click to Sign Up..!
               </Button>
-
             </DialogActions>
           </Dialog>
-            <NotificationContainer/>
-          </div>);
+          <NotificationContainer />
+        </div>
+      );
     } else {
-        return (renderedComponent);
+      return renderedComponent;
     }
-
   }
 }
 

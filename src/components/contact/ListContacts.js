@@ -21,12 +21,12 @@ import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { BrowserRouter as Link } from 'react-router-dom';
 
 import api from '../../common/apiConfig';
-import axios from "axios";
+import axios from 'axios';
 
 let counter = 0;
 function createData(id, firstName, lastName, email, status) {
   counter += 1;
-  return { id: id, firstName, lastName, email, status};
+  return { id: id, firstName, lastName, email, status };
 }
 
 function desc(a, b, orderBy) {
@@ -50,14 +50,31 @@ function stableSort(array, cmp) {
 }
 
 function getSorting(order, orderBy) {
-  return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
+  return order === 'desc'
+    ? (a, b) => desc(a, b, orderBy)
+    : (a, b) => -desc(a, b, orderBy);
 }
 
 let rows = [
-  { id: 'firstName', numeric: false, disablePadding: true, label: 'contact first name' },
-  { id: 'lastName', numeric: false, disablePadding: false, label: 'contact last name' },
+  {
+    id: 'firstName',
+    numeric: false,
+    disablePadding: true,
+    label: 'contact first name'
+  },
+  {
+    id: 'lastName',
+    numeric: false,
+    disablePadding: false,
+    label: 'contact last name'
+  },
   { id: 'email', numeric: false, disablePadding: false, label: 'email' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Active/inActive' },
+  {
+    id: 'status',
+    numeric: false,
+    disablePadding: false,
+    label: 'Active/inActive'
+  }
 ];
 
 class EnhancedTableHead extends React.Component {
@@ -66,7 +83,13 @@ class EnhancedTableHead extends React.Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const {
+      onSelectAllClick,
+      order,
+      orderBy,
+      numSelected,
+      rowCount
+    } = this.props;
 
     return (
       <TableHead>
@@ -114,42 +137,40 @@ EnhancedTableHead.propTypes = {
   onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
-  rowCount: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired
 };
 
 const toolbarStyles = theme => ({
   root: {
-    paddingRight: theme.spacing.unit,
+    paddingRight: theme.spacing.unit
   },
   highlight:
     theme.palette.type === 'light'
       ? {
           color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85)
         }
       : {
           color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
+          backgroundColor: theme.palette.secondary.dark
         },
   spacer: {
-    flex: '1 1 100%',
+    flex: '1 1 100%'
   },
   actions: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary
   },
   title: {
-    flex: '0 0 auto',
-  },
+    flex: '0 0 auto'
+  }
 });
-
-
 
 let EnhancedTableToolbar = props => {
   const { numSelected, classes } = props;
   return (
     <Toolbar
       className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
+        [classes.highlight]: numSelected > 0
       })}
     >
       <div className={classes.title}>
@@ -166,8 +187,11 @@ let EnhancedTableToolbar = props => {
       <div className={classes.spacer} />
       <div className={classes.actions}>
         {numSelected > 0 ? (
-          <Tooltip title="Delete" >
-            <IconButton aria-label="Delete" onClick={this.deleteSelectedContacts}>
+          <Tooltip title="Delete">
+            <IconButton
+              aria-label="Delete"
+              onClick={this.deleteSelectedContacts}
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -185,7 +209,7 @@ let EnhancedTableToolbar = props => {
 
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  numSelected: PropTypes.number.isRequired,
+  numSelected: PropTypes.number.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -193,14 +217,14 @@ EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 3
   },
   table: {
-    minWidth: 1020,
+    minWidth: 1020
   },
   tableWrapper: {
-    overflowX: 'auto',
-  },
+    overflowX: 'auto'
+  }
 });
 
 class ListContacts extends React.Component {
@@ -210,12 +234,12 @@ class ListContacts extends React.Component {
     selected: [],
     data: [],
     page: 0,
-    rowsPerPage: 5,
+    rowsPerPage: 5
   };
 
   deleteSelectedContacts = () => {
     console.log(this.state.selected);
-  }
+  };
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -250,7 +274,7 @@ class ListContacts extends React.Component {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
 
@@ -270,112 +294,121 @@ class ListContacts extends React.Component {
   getContacts = () => {
     let _this = this;
     let headers = {
-        'Content-Type': 'application/json',
-        'token': window.localStorage.getItem("currentUser")
-    }
-    axios.get(api.url + api.contact,{"headers" : headers})
-    .then(function (response) {
-      let user = response.data;
-      for (var i = 0; i < user.length; i++) {
-        _this.state.data.push(createData(user[i]._id, user[i].firstName, user[i].lastName, user[i].email, user[i].status));
-      };
-      _this.forceUpdate();
-    })
-    .catch(function (error) {
-      console.log(error);
-    })
-    .then(function () {
-    // always executed
-    });
-  }
+      'Content-Type': 'application/json',
+      token: window.localStorage.getItem('currentUser')
+    };
+    axios
+      .get(api.url + api.contact, { headers: headers })
+      .then(function(response) {
+        let user = response.data;
+        for (var i = 0; i < user.length; i++) {
+          _this.state.data.push(
+            createData(
+              user[i]._id,
+              user[i].firstName,
+              user[i].lastName,
+              user[i].email,
+              user[i].status
+            )
+          );
+        }
+        _this.forceUpdate();
+      })
+      .catch(function(error) {
+        console.log(error);
+      })
+      .then(function() {
+        // always executed
+      });
+  };
 
   componentDidMount() {
     let _this = this;
-    setTimeout(function(){
+    setTimeout(function() {
       _this.getContacts();
-    }, 1000)
+    }, 1000);
   }
 
   render() {
-
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const emptyRows =
+      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
       <div className="topPadding">
-      <h1>Contacts</h1>
-      <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={this.handleSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
-            />
-            <TableBody>
-              {stableSort(data, getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
+        <h1>Contacts</h1>
+        <Paper className={classes.root}>
+          <EnhancedTableToolbar numSelected={selected.length} />
+          <div className={classes.tableWrapper}>
+            <Table className={classes.table} aria-labelledby="tableTitle">
+              <EnhancedTableHead
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={this.handleSelectAllClick}
+                onRequestSort={this.handleRequestSort}
+                rowCount={data.length}
+              />
+              <TableBody>
+                {stableSort(data, getSorting(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map(n => {
+                    const isSelected = this.isSelected(n.id);
+                    return (
+                      <TableRow
+                        hover
+                        onClick={event => this.handleClick(event, n.id)}
+                        role="checkbox"
+                        aria-checked={isSelected}
+                        tabIndex={-1}
+                        key={n.id}
+                        selected={isSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox checked={isSelected} />
+                        </TableCell>
+                        <TableCell component="th" scope="row" padding="none">
                           <a href={`/contact/${n.id}`}>{n.firstName}</a>
-                      </TableCell>
-                      <TableCell  component="th">
-                      {n.lastName}
-                      </TableCell>
-                      <TableCell  component="th">{n.email}</TableCell>
-                      <TableCell  component="th">{n.status? "Active": "inActive"}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
+                        </TableCell>
+                        <TableCell component="th">{n.lastName}</TableCell>
+                        <TableCell component="th">{n.email}</TableCell>
+                        <TableCell component="th">
+                          {n.status ? 'Active' : 'inActive'}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 49 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <TablePagination
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{
+              'aria-label': 'Previous Page'
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page'
+            }}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          />
+        </Paper>
+      </div>
     );
   }
 }
 
 ListContacts.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(ListContacts);

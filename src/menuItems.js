@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 export const mainMenu = (
   <div>
-    <a href='/'>
+    <a href="/">
       <ListItem button>
         <ListItemIcon>
           <Home />
@@ -22,11 +22,11 @@ export const mainMenu = (
       </ListItem>
     </a>
   </div>
-  );
+);
 
 export const employeeMenu = (
   <div>
-    <a href='/contact'>
+    <a href="/contact">
       <ListItem button>
         <ListItemIcon>
           <GroupAdd />

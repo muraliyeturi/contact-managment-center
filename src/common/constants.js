@@ -1,3 +1,3 @@
 module.exports = {
-  emailDomain: "inmar.com"
+  emailDomain: 'inmar.com'
 };
