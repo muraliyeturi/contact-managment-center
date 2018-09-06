@@ -1,0 +1,6 @@
+.passwordField .ReactPasswordStrength-input{
+  padding: 10px 0;
+}
+.ReactPasswordStrength {
+  border-width: 0px 0px 1px 0px !important;
+}
