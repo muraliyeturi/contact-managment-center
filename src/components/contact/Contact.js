@@ -37,12 +37,35 @@ class Contact extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
     this.state = {
       employeeState: true,
-      firstName: '',
+      firstName: 'asagag',
       lastName: '',
       email: '',
       groupId: '',
       mode: 'add'
     };
+  }
+
+  getGroupById =(groupId) => {
+    let _this = this;
+    if (groupId != null) {
+      let headers = {
+        'Content-Type': 'application/json',
+        token: window.localStorage.getItem('currentUser')
+      };
+      axios
+        .get(api.url + api.group + '/' + groupId, { headers: headers })
+        .then(function(response) {
+          _this.setState({
+            groupName: response.data[0].name,
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        })
+        .then(function() {
+          // always executed
+        });
+    }
   }
 
   componentDidMount() {
@@ -57,14 +80,15 @@ class Contact extends React.Component {
         .get(api.url + api.contact + '/' + contactId, { headers: headers })
         .then(function(response) {
           _this.setState({
-            firstName: response.data.firstName,
-            lastName: response.data.lastName,
-            email: response.data.email,
-            employeeState: response.data.contactActiveStatus,
-            groupId: response.data.groupId,
+            firstName: response.data[0].firstName,
+            lastName: response.data[0].lastName,
+            email: response.data[0].email,
+            employeeState: response.data[0].contactActiveStatus,
+            groupId: response.data[0].groupId,
             contactId: contactId,
             mode: 'update'
           });
+          _this.getGroupById(response.data[0].groupId)
         })
         .catch(function(error) {
           console.log(error);
@@ -235,6 +259,11 @@ class Contact extends React.Component {
             ''
           )}
         </FormControl>
+        {this.state.mode === "update"?
+          <p className={classes.formControl}>
+            Current Group: <b>{this.state.groupName}</b>
+          </p>
+        : ''}
         <Group
           value={this.state.groupId}
           group={this.handleGroupChange}

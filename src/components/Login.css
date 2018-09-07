@@ -1,14 +1,11 @@
 body {
-  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-}
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif; }
 
 .forgotPassword {
   font-size: 12px;
-  padding-left: 10px;
-}
+  padding-left: 10px; }
 
 .errorMessage {
   font-size: 12px;
   padding-left: 10px;
-  color: #cc0000;
-}
+  color: #cc0000; }

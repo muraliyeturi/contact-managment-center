@@ -106,8 +106,8 @@ class AddGroup extends React.Component {
         .get(api.url + api.group + '/' + groupId, { headers: headers })
         .then(function(response) {
           _this.setState({
-            groupName: response.data.name,
-            groupState: response.data.activeStatus,
+            groupName: response.data[0].name,
+            groupState: response.data[0].activeStatus,
             groupId: groupId,
             mode: 'update'
           });
