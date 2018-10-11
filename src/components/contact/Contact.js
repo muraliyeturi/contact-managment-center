@@ -37,7 +37,7 @@ class Contact extends React.Component {
     this.submitHandler = this.submitHandler.bind(this);
     this.state = {
       employeeState: true,
-      firstName: 'asagag',
+      firstName: '',
       lastName: '',
       email: '',
       groupId: '',
@@ -55,8 +55,9 @@ class Contact extends React.Component {
       axios
         .get(api.url + api.group + '/' + groupId, { headers: headers })
         .then(function(response) {
+          console.log(response);
           _this.setState({
-            groupName: response.data[0].name,
+            groupName: response.data[0].groupName,
           });
         })
         .catch(function(error) {

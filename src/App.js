@@ -125,14 +125,13 @@ class MiniDrawer extends React.Component {
   };
 
   handleLogout = () => {
-    NotificationManager.success('user successfully logged out', '!');
     this.setState({ isLoggedIn: false });
     window.localStorage.removeItem('currentUser');
   };
 
   render() {
     const { classes, theme } = this.props;
-    let appContext = <Login sendData={this.isLoggedInStatus} />;
+    let appContext = <Login sendData={this.isLoggedInStatus} onClick={() => {}}  />;
 
     if (this.state.isLoggedIn) {
       appContext = (

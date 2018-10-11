@@ -49,6 +49,7 @@ class CreateUser extends React.Component {
   }
 
   createUserSubmit = () => {
+    console.log(this.state);
     if (
       !this.state.firstName ||
       !this.state.lastName ||
@@ -107,7 +108,7 @@ class CreateUser extends React.Component {
             '^\\w+([\\.-]?\\w+)*(\\b@' + constants.emailDomain + '\\b)+$'
           )
         );
-        this.setState({ validEmail: isValideEmail === null });
+        this.setState({ validEmail: isValideEmail !== null });
         break;
     }
   };
@@ -124,6 +125,7 @@ class CreateUser extends React.Component {
     return (
       <div>
         {this.state.message}
+        <form>
         <FormControl
           aria-describedby="enter first name"
           error={!this.state.firstName}
@@ -166,7 +168,7 @@ class CreateUser extends React.Component {
         </FormControl>
         <FormControl
           aria-describedby="enter email"
-          error={this.state.validEmail}
+          error={!this.state.validEmail}
           className={classes.formControl}
         >
           <InputLabel htmlFor="email-error">Email(User Name)</InputLabel>
@@ -219,7 +221,7 @@ class CreateUser extends React.Component {
             variant="contained"
             component="span"
             className={classes.button}
-            onClick={this.createUserSubmit}
+            onClick= {this.createUserSubmit}
           >
             Sign Up
           </Button>
@@ -232,6 +234,7 @@ class CreateUser extends React.Component {
             return to login
           </Button>
         </span>
+        </form>
         <NotificationContainer />
       </div>
     );

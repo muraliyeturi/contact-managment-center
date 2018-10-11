@@ -38,8 +38,8 @@ function renderInputComponent(inputProps) {
 }
 
 function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.name, query);
-  const parts = parse(suggestion.name, matches);
+  const matches = match(suggestion.groupName, query);
+  const parts = parse(suggestion.groupName, matches);
 
   return (
     <MenuItem selected={isHighlighted} component="div">
@@ -69,7 +69,7 @@ function getSuggestions(value) {
     : suggestions.filter(suggestion => {
         const keep =
           count < 5 &&
-          suggestion.name.slice(0, inputLength).toLowerCase() === inputValue;
+          suggestion.groupName.slice(0, inputLength).toLowerCase() === inputValue;
 
         if (keep) {
           count += 1;
@@ -123,7 +123,7 @@ class Group extends React.Component {
   getSuggestionValue = suggestion => {
     this.setState({ selectedGroupId: suggestion._id });
     console.log(this.state);
-    return suggestion.name;
+    return suggestion.groupName;
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {

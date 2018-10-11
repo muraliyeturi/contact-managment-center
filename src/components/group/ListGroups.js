@@ -284,7 +284,7 @@ class ListGroups extends React.Component {
         let user = response.data;
         for (var i = 0; i < user.length; i++) {
           _this.state.data.push(
-            createData(user[i]._id, user[i].name, user[i].activeStatus)
+            createData(user[i]._id, user[i].groupName, user[i].activeStatus)
           );
         }
         _this.forceUpdate();

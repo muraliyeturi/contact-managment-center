@@ -20,6 +20,11 @@ import axios from 'axios';
 import CreateUser from './register/CreateUser';
 
 import 'react-notifications/lib/notifications.css';
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux';
+
+import {loginBegin, loginSuccess, loginError, loginService } from '../actions/index.js';
+
 import {
   NotificationContainer,
   NotificationManager
@@ -54,30 +59,11 @@ class Login extends React.Component {
   }
 
   submitHandler = () => {
-    if (!this.state.username && !this.state.password) {
-      NotificationManager.warning('error', 'Enter Missing Information', 3000);
-    } else {
-      const _this = this;
-      axios
-        .post(api.url + api.login, {
-          username: this.state.username,
-          password: this.state.password
-        })
-        .then(function(response) {
-          if (response.data.success) {
-            _this.setState({ open: false });
-            _this.props.sendData(response.data);
-            window.localStorage.setItem('currentUser', response.data.token);
-          } else {
-            _this.setState({ loginError: response.data.message });
-            NotificationManager.warning('error', response.data.message, 3000);
-          }
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      _this.forceUpdate();
+    const userObj = {
+      username: this.state.username,
+      password: this.state.password
     }
+    this.props.dispatch(loginService(userObj));
   };
 
   handleChange = event => {
@@ -183,7 +169,9 @@ class Login extends React.Component {
                   ''
                 )}
               </FormControl>
-              <p className="errorMessage">{this.state.loginError}</p>
+              {this.props.loginResponse?
+              <p className="errorMessage">{this.props.loginResponse.message}</p>
+              :''}
               <p className="forgotPassword">
                 <a href="">Forgot password</a>
               </p>
@@ -198,7 +186,8 @@ class Login extends React.Component {
               >
                 Login
               </Button>
-              <Button onClick={this.createUserHandler} color="secondary">
+
+              <Button color="secondary">
                 Click to Sign Up..!
               </Button>
             </DialogActions>
@@ -212,4 +201,12 @@ class Login extends React.Component {
   }
 }
 
-export default withStyles(styles)(Login);
+const mapStateToProps = (state) => {
+  if(state.loginReducer.result !== null) {
+      return  {
+        loginResponse: state.loginReducer.result
+      }
+  }
+}
+
+export default connect(mapStateToProps) (withStyles(styles) (Login));

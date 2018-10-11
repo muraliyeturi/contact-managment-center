@@ -54,7 +54,7 @@ class AddGroup extends React.Component {
       .post(
         api.url + api.group,
         {
-          name: this.state.groupName,
+          groupName: this.state.groupName,
           activeStatus: this.state.groupActiveStatus
         },
         { headers: headers }
@@ -79,7 +79,7 @@ class AddGroup extends React.Component {
       .put(
         api.url + api.group + '/' + _this.state.groupId,
         {
-          name: this.state.groupName,
+          groupName: this.state.groupName,
           activeStatus: this.state.groupState
         },
         { headers: headers }
@@ -106,7 +106,7 @@ class AddGroup extends React.Component {
         .get(api.url + api.group + '/' + groupId, { headers: headers })
         .then(function(response) {
           _this.setState({
-            groupName: response.data[0].name,
+            groupName: response.data[0].groupName,
             groupState: response.data[0].activeStatus,
             groupId: groupId,
             mode: 'update'
